@@ -2,7 +2,7 @@
 #pragma once
 
 void myTestClientHandler::handleClient(int socket) {
-    // get input if solution exits return it, else, generate solution save it and return
+     // get input if solution exits return it, else, generate solution save it and return
     // wait a few seconds for next command
     // if no command is given or the input "end" detected finish
 

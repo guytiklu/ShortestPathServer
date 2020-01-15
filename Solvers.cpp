@@ -138,7 +138,7 @@ class BFS : public Searcher<string> {
         return false;
     }
 
-    Solution<string> search(Searchable<string>* subject) {
+    Solution<string> search(Searchable<string>* subject){
         Solution<string> sol;
         list<Node<string>> vistedList;
         queue<Node<string>> nodeQ;

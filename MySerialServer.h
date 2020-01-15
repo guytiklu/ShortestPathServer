@@ -15,7 +15,7 @@
 
 #pragma once
 
-class MySerialServer : public server_side::Server {
+class MySerialServer : public server_side::Server{
 private:
     static void openThread(int port, ClientHandler *c);
 

@@ -3,7 +3,7 @@
 
 #pragma once
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]){
 
     boot::Main m;
     m.main(argc,argv);

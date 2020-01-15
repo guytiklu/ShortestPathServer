@@ -65,7 +65,7 @@ void MySerialServer::open(int port, ClientHandler* c) {
         }
     }
 
-/*    BestFS srcr{};
+/*   BestFS srcr{};
     SearcherSolver solver(&srcr);
     string solution = solver.solve("enter problem");
     cout<<solution<<endl;*/

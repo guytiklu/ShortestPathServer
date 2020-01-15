@@ -105,15 +105,6 @@ public:
             k++;
         }
 
-        ///reseting the cost of the start point
-        /*string delimiter = ",";
-        int a,b;
-        a = stoi(startPoint.substr(0, startPoint.find(delimiter)));
-        b = stoi(startPoint.substr(startPoint.find(delimiter)+1, startPoint.length()-1));
-        matrix[a][b]=0;*/
-        //printMatrix(matrix,size);
-
-
     }
     //node - state,cost,cameFrom
     int getValue(string str){
