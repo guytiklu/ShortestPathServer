@@ -1,38 +1,38 @@
 #include "Interfaces.h"
 
 class MySearchable : public Searchable<string>{
+    int n;
     int matrix[3][3];
-    int n = 3;
+    string startPoint;
+    string endPoint;
 public:
-    MySearchable(){
-        matrix[0][0]=6;
-        matrix[0][1]=3;
-        matrix[0][2]=5;
-        matrix[1][0]=4;
-        matrix[1][1]=4;
-        matrix[1][2]=1;
-        matrix[2][0]=8;
-        matrix[2][1]=7;
-        matrix[2][2]=100;
+    MySearchable(string str) {
+        //create matrix, start point, end point - from the string
+        //while building set the starting node to value 0;
+
+
+
+
+
     }
     //node - state,cost,cameFrom
     int getValue(string str){
         int a,b;
         string delimiter = ",";
         a = stoi(str.substr(0, str.find(delimiter)));
-        b = stoi(str.substr(str.find(delimiter), str.length()));
+        b = stoi(str.substr(str.find(delimiter)+1, str.length()-1));
         return matrix[a][b];
     }
     Node<string> getInitialNode(){
         Node<string> n{};
-        n.state = "0,0";
+        n.state = startPoint;
         n.cost = 0;
         n.cameFrom = NULL;
         return n;
     };
     Node<string> getGoalNode(){
         Node<string> n{};
-        n.state = "2,2";
+        n.state = endPoint;
         n.cost = getValue(n.state);
         n.cameFrom = NULL;
         return n;
@@ -50,7 +50,7 @@ public:
         string str = nd->state;
         string delimiter = ",";
         a = stoi(str.substr(0, str.find(delimiter)));
-        b = stoi(str.substr(str.find(delimiter), str.length()));
+        b = stoi(str.substr(str.find(delimiter)+1, str.length()-1));
 
         if(inField(a,b+1)){
             Node<string> neigh;
@@ -58,8 +58,8 @@ public:
             str += ",";
             str += to_string(b+1);
             neigh.state=str;
-            neigh.cameFrom = nd;
-            neigh.cost= getValue(neigh.state)+getValue(neigh.cameFrom->state);
+            neigh.cameFrom = new Node<string>(nd);
+            neigh.cost= getValue(neigh.state)+nd->cost;
             list.push_front(neigh);
         }
         if(inField(a,b-1)){
@@ -68,8 +68,8 @@ public:
             str += ",";
             str += to_string(b-1);
             neigh.state=str;
-            neigh.cameFrom = nd;
-            neigh.cost= getValue(neigh.state)+getValue(neigh.cameFrom->state);
+            neigh.cameFrom = new Node<string>(nd);
+            neigh.cost= getValue(neigh.state)+nd->cost;
             list.push_front(neigh);
         }
         if(inField(a-1,b)){
@@ -78,8 +78,8 @@ public:
             str += ",";
             str += to_string(b);
             neigh.state=str;
-            neigh.cameFrom = nd;
-            neigh.cost= getValue(neigh.state)+getValue(neigh.cameFrom->state);
+            neigh.cameFrom = new Node<string>(nd);
+            neigh.cost= getValue(neigh.state)+nd->cost;
             list.push_front(neigh);
         }
         if(inField(a+1,b)){
@@ -88,10 +88,11 @@ public:
             str += ",";
             str += to_string(b);
             neigh.state=str;
-            neigh.cameFrom = nd;
-            neigh.cost= getValue(neigh.state)+getValue(neigh.cameFrom->state);
+            neigh.cameFrom = new Node<string>(nd);
+            neigh.cost= getValue(neigh.state)+nd->cost;
             list.push_front(neigh);
         }
+        return list;
     };
 
 };

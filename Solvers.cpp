@@ -1,4 +1,5 @@
 #import "Interfaces.h"
+#import "MySearchable.cpp"
 #include<bits/stdc++.h>
 #pragma once
 
@@ -10,117 +11,70 @@ public:
     };
 };
 
-class SearcherSolver : public Solver<string,Solution<string>>{
+class SearcherSolver : public Solver<string,string>{
 public:
     Searchable<string>* srcble;
     Searcher<string>* srcr;
-    SearcherSolver(Searchable<string>* s1, Searcher<string>* s2){
-        srcble = s1;
+    SearcherSolver(Searcher<string>* s2){
         srcr = s2;
     }
-    Solution<string> solve(string str){
-        return srcr->search(*srcble);
+    string solve(string str){
+
+        srcble = new MySearchable(str);
+
+        Solution<string> s = srcr->search(srcble);
+        string solution="";
+        bool firstRun = true;
+        for(Node<string> x : s.route){
+            if(firstRun){
+                firstRun=false;
+                continue;
+            }
+            string add;
+            string state1 = x.state;
+            string state2 = x.cameFrom->state;
+            int s1i= stoi(state1.substr(0, state1.find(",")));
+            int s1j= stoi(state1.substr(state1.find(",")+1, state1.length()-1));
+            int s2i= stoi(state2.substr(0, state2.find(",")));
+            int s2j= stoi(state2.substr(state2.find(",")+1, state2.length()-1));
+            if(s1i!=s2i){ // will be 'up' or 'down'
+                if(s1i>s2i){
+                    add="down, ";
+                }
+                else{
+                    add="up, ";
+                }
+            } else { // will be 'left' or 'right'
+                if(s1j>s2j){
+                    add="right, ";
+                }
+                else{
+                    add="left, ";
+                }
+            }
+
+            solution+=add;
+
+        }
+        solution=solution.substr(0,solution.length()-2);
+        solution+="\n";
+        return solution;
     };
 };
 
 class BestFS : public Searcher<string> {
 
-    Solution<string> search(Searchable<string> subject) {
-        /*Solution <string> sol;
-        deque <helper> closed;
-        auto cmp = [](helper left, helper right) { return left.value < right.value; };
-        priority_queue<helper, vector<helper>, decltype(cmp)> open(cmp);
-
-        open.push(helper{subject.getInitialNode(), 0, subject.node.emptyNode});
-        helper h;
-        while (!open.empty()) {
-            h = open.top();
-            open.pop();
-            closed.push_front(h);
-            if (h.nd.equals(subject.getGoalNode())) { //get route & value
-                double val=h.value;
-                list<Node<string>> route;
-                helper* ptr = &h;
-
-                while(ptr->previous.equals(ptr->nd.emptyNode)){
-                    route.push_front(ptr->nd);
-                    ptr=ptr->previous.
-                }
-
-
-            }
-            list <Node<string>> neighbours1 = subject.getNeighbours(h.nd);
-            list <helper> neighbours2;
-            for (Node <string> x : neighbours1) {
-                neighbours2.push_front(helper{x, h.value + x.cost, h.nd});
-            }
-            for (helper x : neighbours2) { // for each neighbour
-                //check if x is in 'closed' and in 'open'
-                bool openB = false;
-                bool closedB = false;
-                for(helper y : closed){
-                    if (x.nd.equals(y.nd)){
-                        closedB=true;
-                    }
-                }
-                list<helper> lst;
-                while(!open.empty()){
-                    lst.push_front(open.top());
-                    open.pop();
-                }
-                for(helper y : lst){
-                    if (x.nd.equals(y.nd)){
-                        openB=true;
-                    }
-                }
-                while(!lst.empty()){
-                    open.push(lst.front());
-                    lst.pop_front();
-                }
-                if(!openB && !closedB){ //if x not in 'open' and 'closed'
-                    open.push(x);
-                }
-                else{ //else
-                    //find x in open:
-                    while(!x.nd.equals(open.top().nd)){
-                        lst.push_front(open.top());
-                        open.pop();
-                    }
-                    // x is now on top of 'open'
-                    double value = -999;
-                    if(openB){
-                        value = open.top().value;
-                    }
-
-                    if(x.value<value){
-                        if(!openB){
-                            open.push(x);
-                        }
-                        else{
-                            open.pop();
-                            open.push(x);
-                        }
-                    }
-
-                    while (!lst.empty()){//get the items back to open
-                        open.push(lst.front());
-                        lst.pop_front();
-                    }
-                }
-            }
-        }
-        return sol;*/
-
+    Solution<string> search(Searchable<string>* subject) {
         deque <Node<string>> closed;
-        auto cmp = [](Node <string> left, Node <string> right) { return left.cost < right.cost; };
+        auto cmp = [](Node <string> left, Node <string> right) { return left.cost > right.cost; };
         priority_queue < Node < string > , vector < Node < string >>, decltype(cmp) > open(cmp);
-        open.push(subject.getInitialNode());
+        open.push(subject->getInitialNode());
 
         while (!open.empty()) {
             Node <string> n = open.top();
             open.pop();
             closed.push_front(n);
-            if (n.equals(subject.getGoalNode())) { // found goal
+            if (n.equals(subject->getGoalNode())) { // found goal
                 //create sol
                 Solution <string> s;
                 s.value = n.cost;
@@ -128,15 +82,20 @@ class BestFS : public Searcher<string> {
                     s.route.push_front(n);
                     n = *n.cameFrom;
                 }
+                s.route.push_front(n);
                 return s;
             }
-            list <Node<string>> neighbours = subject.getNeighbours(&n);
+            list <Node<string>> neighbours = subject->getNeighbours(&n);
             for (Node <string> nei : neighbours) {
                 //check if nei is in closed & open
                 bool neiInClosed = false;
                 bool neiInOpen = false;
 
-                neiInClosed = find(closed.begin(), closed.end(), nei) != closed.end();
+                for(Node<string> x : closed){
+                    if(x.equals(nei)){
+                        neiInClosed = true;
+                    }
+                }
 
                 list <Node<string>> tmpList;
                 while (!nei.equals(open.top()) && !open.empty()) { //try to find nei in open
@@ -151,7 +110,7 @@ class BestFS : public Searcher<string> {
                 if(!neiInClosed && !neiInOpen){
                     open.push(nei);
                 } else {
-                    if(nei.cost<open.top().cost){
+                    if(neiInOpen && nei.cost<open.top().cost){ //@@@@@@@@@@@@@@@@@@@@@@@@
                         open.pop();
                         open.push(nei);
                     }
@@ -161,16 +120,13 @@ class BestFS : public Searcher<string> {
                     open.push(tmpList.front());
                     tmpList.pop_front();
                 }
-
             }
         }
-
-
     }
 
 };
 
-class BFS : public Searcher<string> {
+/*class BFS : public Searcher<string> {
     Solution<string> search(Searchable<string> subject) {
         Solution<string> sol;
         list<Node<string>> neighList;
@@ -197,7 +153,7 @@ class BFS : public Searcher<string> {
 
         return sol;
     }
-};
+};*/
 
 class DFS : public Searcher<string> {
     Solution<string> search(Searchable<string> subject) {

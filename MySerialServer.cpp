@@ -114,8 +114,9 @@ void MySerialServer::open(int port, ClientHandler* c) {
 
     MySearchable srcble{};
     BestFS srcr{};
-    SearcherSolver solver(&srcble,&srcr);
-    Solution<string> solution = solver.solve("");
+    SearcherSolver solver(&srcr);
+    string solution = solver.solve("");
+    cout<<solution<<endl;
 }
 void MySerialServer::closed(int socket) {
     close(socket);

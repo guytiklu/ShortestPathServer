@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <list>
+#include <cstring>
 
 #pragma once
 using namespace std;
@@ -45,9 +46,19 @@ public:
     int color =0 ;
     int distance = 999999;
     Node<T>* cameFrom;
+    Node<T>(){
+
+    }
+    Node<T>(Node<T>* n){
+        this->state = n->state;
+        this->cost = n->cost;
+        this->cameFrom = n->cameFrom;
+    }
     bool equals(Node<T> check){
         if (std::is_same<T, string>::value){
-            if(strcmp(state,check.state)){
+            string str1 = (string)state;
+            string str2 = (string)check.state;
+            if(strcmp(str1.c_str(),str2.c_str())==0){
                 return true;
             }
         }
@@ -84,5 +95,5 @@ struct Solution{
 template <typename T>
 class Searcher{
 public:
-    virtual Solution<T> search(Searchable<T>){};
+    virtual Solution<T> search(Searchable<T>*){};
 };
