@@ -39,21 +39,23 @@ public:
             int s2j= stoi(state2.substr(state2.find(",")+1, state2.length()-1));
             if(s1i!=s2i){ // will be 'up' or 'down'
                 if(s1i>s2i){
-                    add="down, ";
+                    add="Down (";
                 }
                 else{
-                    add="up, ";
+                    add="Up (";
                 }
             } else { // will be 'left' or 'right'
                 if(s1j>s2j){
-                    add="right, ";
+                    add="Right (";
                 }
                 else{
-                    add="left, ";
+                    add="Left (";
                 }
             }
 
             solution+=add;
+            solution+=to_string((int)x.cost);
+            solution+="), ";
 
         }
         solution=solution.substr(0,solution.length()-2);
