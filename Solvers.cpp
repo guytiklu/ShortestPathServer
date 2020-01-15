@@ -23,6 +23,9 @@ public:
         srcble = new MySearchable(str);
 
         Solution<string> s = srcr->search(srcble);
+        if(s.value==INT32_MAX){
+            return "No Path Yo";
+        }
         string solution="";
         bool firstRun = true;
         for(Node<string> x : s.route){
@@ -143,6 +146,7 @@ class BFS : public Searcher<string> {
         list<Node<string>> vistedList;
         queue<Node<string>> nodeQ;
         Node <string> answerNode;
+        int iHaverouteFlag=0;
 
         nodeQ.push(subject->getInitialNode()); ///pushing the Q the first node S
         vistedList.push_front(subject->getInitialNode());///pushing the VistList the first node, marked as we have been here
@@ -151,19 +155,37 @@ class BFS : public Searcher<string> {
             nodeQ.pop();
             if(n.equals(subject->getGoalNode())){
                 answerNode= n;
+                iHaverouteFlag=1;
             }
             for( Node<string> v : subject->getNeighbours(&n)){
                 if(!findIfExistInList(v,vistedList)){
-                    vistedList.push_back(v);
-                    nodeQ.push(v);
+                    if(v.cost>2000000000){
+                        vistedList.push_back(v);
+                    }
+                    else {
+                        vistedList.push_back(v);
+                        nodeQ.push(v);
+                    }
                 }
             }
         }
+        if (iHaverouteFlag==1){/// means BFS found a path
+            while (answerNode.cameFrom != NULL) { ///getting the path to sol
+                sol.route.push_front(answerNode);
+                answerNode = *answerNode.cameFrom;
+            }
+            sol.route.push_front(answerNode);
+            sol.value=answerNode.cost; ///getting the cost to sol
 
-        cout<<"im finshed"<<endl;
+            return sol;
+        }
+        else{
+            sol.value=INT32_MAX;
+            return sol;
+        }
 
 
-        return sol;
+
     }
 };
 
