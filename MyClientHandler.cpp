@@ -29,5 +29,5 @@ void MyClientHandler::handleClient(int socket) {
     }
 
     send(socket, answer.c_str(), answer.length(), 0);
-
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
 }

@@ -128,34 +128,44 @@ class BestFS : public Searcher<string> {
 
 };
 
-/*class BFS : public Searcher<string> {
-    Solution<string> search(Searchable<string> subject) {
+class BFS : public Searcher<string> {
+    bool findIfExistInList(Node<string> v, list<Node<string>> List){
+        for(Node<string> x : List){
+            if(x.equals(v)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Solution<string> search(Searchable<string>* subject) {
         Solution<string> sol;
-        list<Node<string>> neighList;
+        list<Node<string>> vistedList;
         queue<Node<string>> nodeQ;
+        Node <string> answerNode;
 
-        subject.getInitialNode().setDistance(0); /// initialzing the distance to 0
-        subject.getInitialNode().setColor(0);/// initializing the color to white
-        nodeQ.push(subject.getInitialNode()); /// pushhing the initiali node inside the Q
-        while (nodeQ.size()!=0){ /// as long as the Q is not empty
-            Node<string> u;  /// node u
-            u = nodeQ.front(); /// initialize u with the first node in Q
-            nodeQ.pop(); /// moving forword the Q
-
-            for( Node<string> v : subject.getNeighbours(&u)){ /// for each v in adj(u)
-                if (v.color == 0){ /// if the color of the neigh is white
-                    v.setColor(1);/// make it grey
-                    v.setDistance(u.distance +1 ); /// intialize the neigh with distance+1
-                    v.cameFrom =&u; /// initialize the came from with u
-                    nodeQ.push(v); /// insert the niegh into the Q
+        nodeQ.push(subject->getInitialNode()); ///pushing the Q the first node S
+        vistedList.push_front(subject->getInitialNode());///pushing the VistList the first node, marked as we have been here
+        while(nodeQ.size()!=0){
+            Node <string> n= nodeQ.front();
+            nodeQ.pop();
+            if(n.equals(subject->getGoalNode())){
+                answerNode= n;
+            }
+            for( Node<string> v : subject->getNeighbours(&n)){
+                if(!findIfExistInList(v,vistedList)){
+                    vistedList.push_back(v);
+                    nodeQ.push(v);
                 }
             }
-            u.setColor(2); /// finished with u, coloring it with black
         }
+
+        cout<<"im finshed"<<endl;
+
 
         return sol;
     }
-};*/
+};
 
 class DFS : public Searcher<string> {
     Solution<string> search(Searchable<string> subject) {
