@@ -80,7 +80,6 @@ void MyParallelServer::open(int port, ClientHandler* c) {
         }
         i++;
     }
-
     closed(socketfd1);
 
 }

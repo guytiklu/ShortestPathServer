@@ -1,5 +1,4 @@
 #include "Interfaces.h"
-#include <limits>
 #include <algorithm>
 
 class MySearchable : public Searchable<string>{

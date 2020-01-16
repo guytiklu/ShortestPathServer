@@ -12,4 +12,4 @@ public:
         cm = new FileCacheManager<string,string>();
     }
     void handleClient(int socket);
-};
+} ;

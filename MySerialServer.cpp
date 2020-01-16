@@ -54,7 +54,7 @@ void MySerialServer::openThread(int port, ClientHandler *c){
     connected = false;
 }
 
-void MySerialServer::open(int port, ClientHandler* c) {
+void MySerialServer::open(int port,ClientHandler* c) {
     socketPreparations2(port,&socketfd2,&address2);
     while(true) {
         thread tr(openThread, port, c);

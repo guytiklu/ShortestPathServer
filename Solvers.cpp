@@ -270,4 +270,4 @@ class Astar : public Searcher<string> {
 
         return sol;
     }
-};
+} ;

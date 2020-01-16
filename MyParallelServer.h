@@ -12,7 +12,6 @@
 #include <mutex>
 #include "MySearchable.cpp"
 #include "Solvers.cpp"
-
 #pragma once
 
 class MyParallelServer : public server_side::Server{
