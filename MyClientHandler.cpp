@@ -9,8 +9,8 @@ void MyClientHandler::handleClient(int socket) {
     string problem = "";
     bool stop=false;
     while (true) {
-        char buffer[1024] = {0};
-        read(socket, buffer, 1024);
+        char buffer[4096] = {0};
+        read(socket, buffer, 4096);
         if(strcmp(buffer,"end")==0){
             break;
         } else {
@@ -29,5 +29,4 @@ void MyClientHandler::handleClient(int socket) {
     }
 
     send(socket, answer.c_str(), answer.length(), 0);
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
 }

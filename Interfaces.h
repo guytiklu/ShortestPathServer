@@ -43,8 +43,6 @@ class Node{
 public:
     T state;
     double cost;
-    int color =0 ;
-    int distance = 999999;
     Node<T>* cameFrom;
     Node<T>(){
 
@@ -68,12 +66,6 @@ public:
             }
         }
         return false;
-    }
-    void setColor(int d){
-        color= d;
-    }
-    void setDistance(int d){
-        distance=d;
     }
 };
 

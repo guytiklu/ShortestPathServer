@@ -59,7 +59,7 @@ void MySerialServer::open(int port,ClientHandler* c) {
     while(true) {
         thread tr(openThread, port, c);
         tr.detach();
-        int timeout = 20;
+        int timeout = 60;
         int timer = timeout*5;
         while (!connected && timer != 0) {
             std::this_thread::sleep_for(std::chrono::milliseconds(200));

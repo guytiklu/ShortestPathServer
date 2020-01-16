@@ -11,17 +11,16 @@ namespace boot {
     class Main {
     public:
         static int main(int argc,char* argv[]) {
-            /*//serial server
+            //serial server
             MySerialServer mss{};
             MyClientHandler mtch{};
-            mss.open(stoi(argv[1]), &mtch);*/
+            mss.open(stoi(argv[1]), &mtch);
 
-            //parallel server
-            MyParallelServer mps{};
+            /*MyParallelServer mps{};
             MyClientHandler mtch{};
-            mps.open(stoi(argv[1]), &mtch);
+            mps.open(stoi(argv[1]), &mtch);*/
 
             return 0;
         }
-    };
+    } ;
 }

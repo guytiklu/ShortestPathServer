@@ -23,6 +23,7 @@ public:
         srcble = new MySearchable(str);
 
         Solution<string> s = srcr->search(srcble);
+        cout<<"value:"<<s.value<<", steps:"<<s.route.size()-1<<endl;//#######################################
         if(s.value==INT32_MAX){
             return "No Path Yo";
         }
@@ -91,6 +92,9 @@ class BestFS : public Searcher<string> {
                     }
                 }
                 s.route.push_front(n);
+                if(n.cost>2000000000 || n.cost<0){
+                    s.value=INT32_MAX;
+                }
                 return s;
             }
             list <Node<string>> neighbours = subject->getNeighbours(&n);
