@@ -177,12 +177,13 @@ class BFS : public Searcher<string> {
             }
         }
         if (iHaverouteFlag==1){/// means BFS found a path
+            sol.value=answerNode.cost; ///getting the cost to sol
             while (answerNode.cameFrom != NULL) { ///getting the path to sol
                 sol.route.push_front(answerNode);
                 answerNode = *answerNode.cameFrom;
             }
             sol.route.push_front(answerNode);
-            sol.value=answerNode.cost; ///getting the cost to sol
+
 
             return sol;
         }
@@ -235,12 +236,12 @@ class DFS : public Searcher<string> {
             }
         }
         if (iHaverouteFlag == 1) {/// means BFS found a path
+            sol.value = answerNode.cost; ///getting the cost to sol
             while (answerNode.cameFrom != NULL) { ///getting the path to sol
                 sol.route.push_front(answerNode);
                 answerNode = *answerNode.cameFrom;
             }
             sol.route.push_front(answerNode);
-            sol.value = answerNode.cost; ///getting the cost to sol
 
             return sol;
         }
@@ -252,26 +253,106 @@ class DFS : public Searcher<string> {
 };
 
 class Astar : public Searcher<string> {
-    Node<string> findTheLeastF(list<Node<string>> list){
 
+    Node<string> goalNode;
+    struct starNode{
+        Node<string>* node;
+        int h;
+        int f;
+        starNode* cameFrom;
+    };
+    int getHeuristicValue(Node<string> sn){//manhattan style
+        string state = sn.state;
+        int nodei = stoi(state.substr(0, state.find(",")));
+        int nodej = stoi(state.substr(state.find(",")+1, state.length()-1));
+        state = goalNode.state;
+        int goali = stoi(state.substr(0, state.find(",")));
+        int goalj = stoi(state.substr(state.find(",")+1, state.length()-1));
 
-
+        return abs(nodei-goali)+abs(nodej-goalj);
 
     }
-
-    Solution<string> search(Searchable<string> subject) {
-        Solution <string> sol;
-        list<Node<string>> closeList;
-        list<Node<string>> openList;
-        openList.push_front(subject.getInitialNode()); ///inserting the startNode
-
-        while(openList.size()!=0){
-
-            Node <string> q = findTheLeastF(openList);
-
-
+    bool findIfExistInList(starNode v, list<starNode> List,int* f){
+        for(starNode x : List){
+            if(x.node->equals(v.node)){
+                *f=x.f;
+                return true;
+            }
         }
+        return false;
+    }
 
+    Solution<string> search(Searchable<string>* subject) {
+        goalNode=subject->getGoalNode();
+        Solution <string> sol;
+        sol.value=INT32_MAX;
+        list<starNode> closeList;
+        auto cmp = [](starNode left, starNode right) { return left.node->cost > right.node->cost; };
+        priority_queue < starNode , vector < starNode>, decltype(cmp) > openList(cmp);
+        Node<string> n = subject->getInitialNode();
+        starNode first{&n,getHeuristicValue(n),(int)n.cost+getHeuristicValue(n),NULL};
+        openList.push(first);
+
+        while(!openList.empty()){
+            starNode q = openList.top();
+            openList.pop();
+            list <Node<string>> neighbours = subject->getNeighbours(q.node);
+            list <starNode> starNeighbours;
+            for (Node<string> x : neighbours){ //transform neighbours to starNeighbours
+                starNode sn{&x,getHeuristicValue(x),(int)x.cost+getHeuristicValue(x),&q};
+                starNeighbours.push_back(sn);
+            }
+
+            for(starNode x : starNeighbours){
+                if(x.node->equals(subject->getGoalNode())){ //if found goal
+                    //create sol
+                    Solution <string> s;
+                    s.value = x.node->cost;
+                    while (x.node->cameFrom != NULL) {
+                        s.route.push_front(x.node);
+                        x = *x.cameFrom;
+                        if(x.node->cost>2000000000 || x.node->cost<0){
+                            s.value=INT32_MAX;
+                        }
+                    }
+                    s.route.push_front(x.node);
+                    if(x.node->cost>2000000000 || x.node->cost<0){
+                        s.value=INT32_MAX;
+                    }
+                    return s;
+                }
+
+                list<starNode>temp;
+                bool xInOpen=false;
+                int f;
+                while(!openList.empty()){ //check if x is in open
+                    if(openList.top().node->equals(x.node)){
+                        xInOpen=true;
+                        f=openList.top().f;
+                    }
+                    temp.push_back(openList.top());
+                    openList.pop();
+                }
+                while(!temp.empty()){//insert nodes back to openlist
+                    openList.push(temp.front());
+                    temp.pop_front();
+                }
+
+                if(xInOpen){
+                    if(f<x.f){
+                        continue;
+                    }
+                }
+
+                if(findIfExistInList(x,closeList,&f) && f<x.f) {
+                    continue;
+                } else {
+                    openList.push(x);
+                }
+            }// end neighbours for
+
+            closeList.push_back(q);
+        }// end while
         return sol;
     }
 } ;

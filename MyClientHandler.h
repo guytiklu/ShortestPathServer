@@ -8,7 +8,7 @@ public:
     Solver<string,string>* solver;
     CacheManager<string,string> *cm;
     MyClientHandler(){
-        solver = new SearcherSolver(new BFS());
+        solver = new SearcherSolver(new Astar());
         cm = new FileCacheManager<string,string>();
     }
     void handleClient(int socket);

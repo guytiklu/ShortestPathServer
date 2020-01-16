@@ -55,7 +55,7 @@ void MySerialServer::openThread(int port, ClientHandler *c){
 }
 
 void MySerialServer::open(int port,ClientHandler* c) {
-    socketPreparations2(port,&socketfd2,&address2);
+    /*socketPreparations2(port,&socketfd2,&address2);
     while(true) {
         thread tr(openThread, port, c);
         tr.detach();
@@ -73,12 +73,12 @@ void MySerialServer::open(int port,ClientHandler* c) {
             std::this_thread::sleep_for(std::chrono::milliseconds(20));
         }
     }
-    closed(socketfd2);
+    closed(socketfd2);*/
 
-/*   BestFS srcr{};
+    Astar srcr{};
     SearcherSolver solver(&srcr);
-    string solution = solver.solve("enter problem");
-    cout<<solution<<endl;*/
+    string solution = solver.solve("6,3,5\n4,4,1\n8,7,100\n0,0\n2,2\n");
+    cout<<solution<<endl;
 }
 void MySerialServer::closed(int socket) {
     close(socket);
