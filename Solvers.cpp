@@ -256,7 +256,7 @@ class Astar : public Searcher<string> {
 
     Node<string> goalNode;
     struct starNode{
-        Node<string>* node;
+        Node<string> node;
         int h;
         int f;
         starNode* cameFrom;
@@ -274,7 +274,7 @@ class Astar : public Searcher<string> {
     }
     bool findIfExistInList(starNode v, list<starNode> List,int* f){
         for(starNode x : List){
-            if(x.node->equals(v.node)){
+            if(x.node.equals(v.node)){
                 *f=x.f;
                 return true;
             }
@@ -287,36 +287,56 @@ class Astar : public Searcher<string> {
         Solution <string> sol;
         sol.value=INT32_MAX;
         list<starNode> closeList;
-        auto cmp = [](starNode left, starNode right) { return left.node->cost > right.node->cost; };
+        auto cmp = [](starNode left, starNode right) { return left.f > right.f; };
         priority_queue < starNode , vector < starNode>, decltype(cmp) > openList(cmp);
         Node<string> n = subject->getInitialNode();
         starNode first{&n,getHeuristicValue(n),(int)n.cost+getHeuristicValue(n),NULL};
         openList.push(first);
 
         while(!openList.empty()){
-            starNode q = openList.top();
-            openList.pop();
-            list <Node<string>> neighbours = subject->getNeighbours(q.node);
-            list <starNode> starNeighbours;
-            for (Node<string> x : neighbours){ //transform neighbours to starNeighbours
-                starNode sn{&x,getHeuristicValue(x),(int)x.cost+getHeuristicValue(x),&q};
-                starNeighbours.push_back(sn);
+            starNode tmp = openList.top();
+            starNode* q = new starNode();
+            q->node=tmp.node;
+            q->h=tmp.h;
+            q->f=tmp.f;
+            q->cameFrom=tmp.cameFrom;
+            if(q->node.cost==INT32_MAX){
+                closeList.push_back(*q);
+                continue;
             }
 
+            openList.pop();
+            list <Node<string>> neighbours = subject->getNeighbours(&q->node);
+            list <starNode> starNeighbours;
+
+            while(!neighbours.empty()) { //transform neighbours to starNeighbours
+                Node<string> *ptr = &neighbours.front();
+                starNode sn{ptr, getHeuristicValue(ptr), (int) ptr->cost + getHeuristicValue(ptr), q};
+                if(sn.node.cost>2000000000 || sn.node.cost<-1){
+                    sn.f=INT32_MAX;
+                    closeList.push_back(sn);
+                    neighbours.pop_front();
+                    continue;
+                }
+                starNeighbours.push_back(sn);
+                neighbours.pop_front();
+            }
+
+
             for(starNode x : starNeighbours){
-                if(x.node->equals(subject->getGoalNode())){ //if found goal
+                if(x.node.equals(subject->getGoalNode())){ //if found goal
                     //create sol
                     Solution <string> s;
-                    s.value = x.node->cost;
-                    while (x.node->cameFrom != NULL) {
+                    s.value = x.node.cost;
+                    while (x.node.cameFrom != NULL) {
                         s.route.push_front(x.node);
                         x = *x.cameFrom;
-                        if(x.node->cost>2000000000 || x.node->cost<0){
+                        if(x.node.cost>2000000000 || x.node.cost<0){
                             s.value=INT32_MAX;
                         }
                     }
                     s.route.push_front(x.node);
-                    if(x.node->cost>2000000000 || x.node->cost<0){
+                    if(x.node.cost>2000000000 || x.node.cost<0){
                         s.value=INT32_MAX;
                     }
                     return s;
@@ -326,7 +346,7 @@ class Astar : public Searcher<string> {
                 bool xInOpen=false;
                 int f;
                 while(!openList.empty()){ //check if x is in open
-                    if(openList.top().node->equals(x.node)){
+                    if(x.node.equals(openList.top().node)){
                         xInOpen=true;
                         f=openList.top().f;
                     }
@@ -351,7 +371,7 @@ class Astar : public Searcher<string> {
                 }
             }// end neighbours for
 
-            closeList.push_back(q);
+            closeList.push_back(*q);
         }// end while
         return sol;
     }

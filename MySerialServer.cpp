@@ -55,7 +55,7 @@ void MySerialServer::openThread(int port, ClientHandler *c){
 }
 
 void MySerialServer::open(int port,ClientHandler* c) {
-    /*socketPreparations2(port,&socketfd2,&address2);
+/*    socketPreparations2(port,&socketfd2,&address2);
     while(true) {
         thread tr(openThread, port, c);
         tr.detach();
@@ -77,7 +77,18 @@ void MySerialServer::open(int port,ClientHandler* c) {
 
     Astar srcr{};
     SearcherSolver solver(&srcr);
-    string solution = solver.solve("6,3,5\n4,4,1\n8,7,100\n0,0\n2,2\n");
+    string solution = solver.solve("9,1,9,10,8,4,1,8,-1,3,7\n"
+                                   "0,8,4,3,10,3,8,2,0,8,10\n"
+                                   "6,2,3,4,8,5,4,9,10,10,7\n"
+                                   "4,2,10,5,-1,3,10,3,8,-1,10\n"
+                                   "2,0,10,10,3,7,7,0,1,0,3\n"
+                                   "9,10,7,2,2,10,0,2,3,3,10\n"
+                                   "10,5,0,1,6,4,0,2,0,1,7\n"
+                                   "8,7,3,6,6,4,1,1,3,3,9\n"
+                                   "8,4,-1,7,2,5,10,1,10,3,4\n"
+                                   "10,1,9,8,1,5,7,0,2,2,3\n"
+                                   "-1,10,2,9,7,3,9,10,9,1,5\n"
+                                   "0,0\n10,10\n");
     cout<<solution<<endl;
 }
 void MySerialServer::closed(int socket) {
