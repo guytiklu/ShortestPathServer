@@ -86,6 +86,9 @@ class BestFS : public Searcher<string> {
                 while (n.cameFrom != NULL) {
                     s.route.push_front(n);
                     n = *n.cameFrom;
+                    if(n.cost>2000000000 || n.cost<0){
+                        s.value=INT32_MAX;
+                    }
                 }
                 s.route.push_front(n);
                 return s;
@@ -190,20 +193,80 @@ class BFS : public Searcher<string> {
 };
 
 class DFS : public Searcher<string> {
-    Solution<string> search(Searchable<string> subject) {
-        Solution<string> sol;
+    bool findIfExistInList(Node<string> v, list<Node<string>> List) {
+        for (Node <string> x : List) {
+            if (x.equals(v)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    Solution<string> search(Searchable<string> *subject) {
+        Solution <string> sol;
+        list <Node<string>> vistedList;
+        stack <Node<string>> nodeStack;
+        Node <string> answerNode;
+        int iHaverouteFlag = 0;
 
+        nodeStack.push(subject->getInitialNode()); ///insert into the stack the startNode
+        vistedList.push_front(subject->getInitialNode()); ///mark as read
 
-        return sol;
+        while (nodeStack.size() != 0) { ///while stack is not empty
+            Node <string> v = nodeStack.top();
+            nodeStack.pop();
+            if (v.equals(subject->getGoalNode())) {
+                answerNode = v;
+                iHaverouteFlag = 1;
+            }
+            for (Node <string> u : subject->getNeighbours(&v)) {
+                if (!findIfExistInList(u, vistedList)) { ///check if kodkodv v has been visited"
+                    if (u.cost > 2000000000) {
+                        vistedList.push_back(u);
+                    } else {
+                        vistedList.push_back(u);
+                        nodeStack.push(u);
+                    }
+                }
+            }
+        }
+        if (iHaverouteFlag == 1) {/// means BFS found a path
+            while (answerNode.cameFrom != NULL) { ///getting the path to sol
+                sol.route.push_front(answerNode);
+                answerNode = *answerNode.cameFrom;
+            }
+            sol.route.push_front(answerNode);
+            sol.value = answerNode.cost; ///getting the cost to sol
+
+            return sol;
+        }
+        else {
+            sol.value = INT32_MAX;
+            return sol;
+        }
     }
 };
 
 class Astar : public Searcher<string> {
+    Node<string> findTheLeastF(list<Node<string>> list){
+
+
+
+
+    }
+
     Solution<string> search(Searchable<string> subject) {
-        Solution<string> sol;
+        Solution <string> sol;
+        list<Node<string>> closeList;
+        list<Node<string>> openList;
+        openList.push_front(subject.getInitialNode()); ///inserting the startNode
+
+        while(openList.size()!=0){
+
+            Node <string> q = findTheLeastF(openList);
 
 
+        }
 
         return sol;
     }

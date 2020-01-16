@@ -18,7 +18,6 @@
 class MyParallelServer : public server_side::Server{
 private:
     static void openThread(int port, ClientHandler *c);
-
 public:
     void open(int port, ClientHandler *c);
 

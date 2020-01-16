@@ -5,8 +5,10 @@
 #pragma once
 
 bool connected = false;
+int socketfd2;
+sockaddr_in address2;
 
-void MySerialServer::openThread(int port, ClientHandler *c){
+void socketPreparations2(int port, int* sktfd, sockaddr_in* adrs){
     //create socket
     int socketfd = socket(AF_INET, SOCK_STREAM, 0);
     if (socketfd == -1) {
@@ -14,6 +16,8 @@ void MySerialServer::openThread(int port, ClientHandler *c){
         std::cerr << "Could not create a socket" << std::endl;
 
     }
+    *sktfd = socketfd;
+
     //bind socket to IP address
     // we first need to create the sockaddr obj.
     sockaddr_in address; //in means IP4
@@ -22,19 +26,24 @@ void MySerialServer::openThread(int port, ClientHandler *c){
     address.sin_port = htons(port);
     //we need to convert our number
     // to a number that the network understands.
+    *adrs = address;
 
     //the actual bind command
     if (bind(socketfd, (struct sockaddr *) &address, sizeof(address)) == -1) {
         std::cerr << "Could not bind the socket to an IP" << std::endl;
     }
     //making socket listen to the port
-    if (listen(socketfd, 5) == -1) { //can also set to SOMAXCON (max connections)
+    if (listen(socketfd, 20) == -1) { //can also set to SOMAXCON (max connections)
         std::cerr << "Error during listening command" << std::endl;
 
     }
+}
+
+void MySerialServer::openThread(int port, ClientHandler *c){
+
     cout << "Waiting for client to connect . . ." << endl;
     // accepting a client
-    int client_socket = accept(socketfd, (struct sockaddr *) &address, (socklen_t *) &address);
+    int client_socket = accept(socketfd2, (struct sockaddr *) &address2, (socklen_t *) &address2);
     if (client_socket == -1) {
         std::cerr << "Error accepting client" << std::endl;
     }
@@ -42,18 +51,18 @@ void MySerialServer::openThread(int port, ClientHandler *c){
     connected = true;
 
     c->handleClient(client_socket);
-    close(client_socket);
-    close(socketfd);
     connected = false;
 }
 
 void MySerialServer::open(int port, ClientHandler* c) {
+    socketPreparations2(port,&socketfd2,&address2);
     while(true) {
         thread tr(openThread, port, c);
         tr.detach();
-        int timer = 20*2;
+        int timeout = 20;
+        int timer = timeout*5;
         while (!connected && timer != 0) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
             timer--;
         }
         if (timer == 0) {
@@ -61,9 +70,10 @@ void MySerialServer::open(int port, ClientHandler* c) {
             return;
         }
         while (connected) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+            std::this_thread::sleep_for(std::chrono::milliseconds(20));
         }
     }
+    closed(socketfd2);
 
 /*   BestFS srcr{};
     SearcherSolver solver(&srcr);
