@@ -300,10 +300,11 @@ class Astar : public Searcher<string> {
             q->h=tmp.h;
             q->f=tmp.f;
             q->cameFrom=tmp.cameFrom;
-            if(q->node.cost==INT32_MAX){
+            if(q->node.cost>2000000000 || q->node.cost<-1){
                 closeList.push_back(*q);
                 continue;
             }
+
 
             openList.pop();
             list <Node<string>> neighbours = subject->getNeighbours(&q->node);
@@ -311,6 +312,7 @@ class Astar : public Searcher<string> {
 
             while(!neighbours.empty()) { //transform neighbours to starNeighbours
                 Node<string> *ptr = &neighbours.front();
+
                 starNode sn{ptr, getHeuristicValue(ptr), (int) ptr->cost + getHeuristicValue(ptr), q};
                 if(sn.node.cost>2000000000 || sn.node.cost<-1){
                     sn.f=INT32_MAX;
@@ -359,12 +361,12 @@ class Astar : public Searcher<string> {
                 }
 
                 if(xInOpen){
-                    if(f<x.f){
+                    if(f<=x.f){
                         continue;
                     }
                 }
 
-                if(findIfExistInList(x,closeList,&f) && f<x.f) {
+                if(findIfExistInList(x,closeList,&f) && f<=x.f) {
                     continue;
                 } else {
                     openList.push(x);
