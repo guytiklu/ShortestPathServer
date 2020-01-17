@@ -35,6 +35,9 @@ S - starting point;
 E - ending point
 
 The server can handle many clients simultaneously
+## Additional Stuff
+
+A foler name 'Searcher Results' is attached. You will find there some results for each Search algorithm & a (very) nice PDF graph.
 
 ## GIT
 https://github.com/guytiklu/Ex4v2
