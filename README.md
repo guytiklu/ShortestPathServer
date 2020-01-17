@@ -1,5 +1,4 @@
 # Ex4v2
-# Ex4
 
 Ex4 is a shortest path finding server.
 
