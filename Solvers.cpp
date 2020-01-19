@@ -287,7 +287,7 @@ class Astar : public Searcher<string> {
         Solution <string> sol;
         sol.value=INT32_MAX;
         list<starNode> closeList;
-        auto cmp = [](starNode left, starNode right) { return left.f > right.f; };
+        auto cmp = [](starNode left, starNode right) { return ((left.f > right.f)&&(left.node.cost>right.node.cost)); };
         priority_queue < starNode , vector < starNode>, decltype(cmp) > openList(cmp);
         Node<string> n = subject->getInitialNode();
         starNode first{&n,getHeuristicValue(n),(int)n.cost+getHeuristicValue(n),NULL};
