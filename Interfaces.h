@@ -36,7 +36,7 @@ class Solver{
 public:
     Solver<Problem,Solution>(){};
     virtual Solution solve(Problem p){};
-} ;
+};
 
 template <typename T>
 class Node{

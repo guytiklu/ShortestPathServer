@@ -78,7 +78,7 @@ void MyParallelServer::open(int port, ClientHandler* c) {
             cout << "timeout, the server is closed" << endl;
             return;
         }
-        i++;
+        i++ ;
     }
     closed(socketfd1);
 

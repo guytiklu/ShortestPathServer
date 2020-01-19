@@ -1,21 +1,28 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include "MyClientHandler.h"
+#include <mutex>
 #pragma once
 
  //solver
  //cm
+
 void MyClientHandler::handleClient(int socket) {
+    mutex m;
     string problem = "";
     bool stop=false;
     while (true) {
         char buffer[4096] = {0};
-        read(socket, buffer, 4096);
-        if(strcmp(buffer,"end")==0){
+        m.lock();
+        int length = read(socket, buffer, 4096);
+        m.unlock();
+        if(strcmp(buffer,"end\n")==0 || strcmp(buffer,"end")==0){
             break;
         } else {
             problem += buffer;
-            problem += "\n";
+            if(buffer[length-1]!='\n') {
+                problem += "\n";
+            }
         }
     }
 

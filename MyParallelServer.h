@@ -21,4 +21,4 @@ public:
     void open(int port, ClientHandler *c);
 
     void closed(int socket);
-};
+} ;

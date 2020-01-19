@@ -10,5 +10,5 @@ int main(int argc, char* argv[]){
 
     //make server thread run in thread and open client thread and try to connect
 
-    return 0;
+    return 0 ;
 }

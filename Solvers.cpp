@@ -260,7 +260,7 @@ class Astar : public Searcher<string> {
         int h;
         int f;
         starNode* cameFrom;
-    };
+    } ;
     int getHeuristicValue(Node<string> sn){//manhattan style
         string state = sn.state;
         int nodei = stoi(state.substr(0, state.find(",")));
